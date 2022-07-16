@@ -4,12 +4,10 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import Session
 
-import crud
-import database
-import schemas
-from database import sessionLocal
+from web_api import schemas, crud
+from web_api.database import Base, sessionLocal, engine
 
-database.Base.metadata.create_all(bind=database.engine)
+Base.metadata.create_all(bind=engine)
 app = FastAPI()
 engine = create_engine('sqlite:///database.sqlite')
 meta = MetaData(bind=engine)
@@ -32,7 +30,6 @@ def create_record(sc_record: schemas.RecordCreate, db: Session = Depends(get_db)
 @app.get('/records', response_model=List[schemas.Record])
 def read_records(db: Session = Depends(get_db)):
     records = crud.read_records(db, True)
-    #print(records[0].name, type(records))
     return records
 
 

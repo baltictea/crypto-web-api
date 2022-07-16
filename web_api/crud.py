@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import Session
 
-import models
-import schemas
+from web_api import schemas, models
 
 app = FastAPI()
 engine = create_engine('sqlite:///database.sqlite')
@@ -24,7 +23,7 @@ def create_record(db: Session, sc_record: schemas.RecordCreate):
 def read_records(db: Session, search_filter):
     return db \
         .query(models.DatabaseRecord) \
-        .filter(search_filter)\
+        .filter(search_filter) \
         .all()
 
 
@@ -39,7 +38,6 @@ def update_record(db: Session, record_id: int, sc_record: schemas.RecordCreate):
     db.add(record)
     db.commit()
     db.refresh(record)
-
 
 
 def delete_record(db: Session, record_id: int):

@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float
-from database import Base
+
+from web_api.database import Base
 
 
 class DatabaseRecord(Base):
