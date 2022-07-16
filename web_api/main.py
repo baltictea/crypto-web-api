@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import FastAPI, Depends
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, text
 from sqlalchemy.orm import Session
 
 from web_api import schemas, crud
@@ -29,7 +29,19 @@ def create_record(sc_record: schemas.RecordCreate, db: Session = Depends(get_db)
 
 @app.get('/records', response_model=List[schemas.Record])
 def read_records(db: Session = Depends(get_db)):
-    records = crud.read_records(db, True)
+    records = crud.read_records(db, {})
+    return records
+
+
+@app.get('/records/filter_by_id/{record_id}', response_model=List[schemas.Record])
+def read_records_by_id(record_id: int, db: Session = Depends(get_db)):
+    records = crud.read_records(db, {'id': record_id})
+    return records
+
+
+@app.get('/records/filter_by_name/{record_name}', response_model=List[schemas.Record])
+def read_records_by_name(record_name: str, db: Session = Depends(get_db)):
+    records = crud.read_records(db, {'name': record_name})
     return records
 
 
