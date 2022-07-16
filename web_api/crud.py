@@ -23,7 +23,7 @@ def create_record(db: Session, sc_record: schemas.RecordCreate):
 def read_records(db: Session, search_filter):
     return db \
         .query(models.DatabaseRecord) \
-        .filter(search_filter) \
+        .filter_by(**search_filter) \
         .all()
 
 
