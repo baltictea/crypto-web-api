@@ -2,14 +2,15 @@ from fastapi import FastAPI
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import Session
 
-from web_api import schemas, models
+from web_api import models
+from web_api import schemas
 
 app = FastAPI()
 engine = create_engine('sqlite:///database.sqlite')
 meta = MetaData(bind=engine)
 
 
-def create_record(db: Session, sc_record: schemas.RecordCreate):
+def create_record(db: Session, sc_record: schemas.Record):
     record = models.DatabaseRecord(
         name=sc_record.name,
         rate=sc_record.rate,
@@ -27,7 +28,7 @@ def read_records(db: Session, search_filter):
         .all()
 
 
-def update_record(db: Session, record_id: int, sc_record: schemas.RecordCreate):
+def update_record(db: Session, record_id: int, sc_record: schemas.Record):
     record = db \
         .query(models.DatabaseRecord) \
         .where(models.DatabaseRecord.id == record_id) \

@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import FastAPI, Depends
-from sqlalchemy import create_engine, MetaData, text
+from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
 from web_api import schemas, crud
@@ -9,7 +9,6 @@ from web_api.database import Base, sessionLocal, engine
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
-engine = create_engine('sqlite:///database.sqlite')
 meta = MetaData(bind=engine)
 
 
@@ -22,7 +21,7 @@ def get_db():
 
 
 @app.post('/records')
-def create_record(sc_record: schemas.RecordCreate, db: Session = Depends(get_db)):
+def create_record(sc_record: schemas.Record, db: Session = Depends(get_db)):
     crud.create_record(db, sc_record)
     return 'ok'
 
@@ -45,17 +44,13 @@ def read_records_by_name(record_name: str, db: Session = Depends(get_db)):
     return records
 
 
+@app.put('/records')
+def update_record(record_id: int, sc_record: schemas.Record, db: Session = Depends(get_db)):
+    crud.update_record(db, record_id, sc_record)
+    return 'ok'
+
+
 @app.delete('/records')
 def delete_record(record_id: int, db: Session = Depends(get_db)):
     crud.delete_record(db, record_id)
     return 'ok'
-
-
-@app.put('/records')
-def update_record(record_id: int, sc_record: schemas.RecordCreate, db: Session = Depends(get_db)):
-    crud.update_record(db, record_id, sc_record)
-    return 'ok'
-
-# @app.get('/')
-# def get_table_names():
-#    return engine.table_names()

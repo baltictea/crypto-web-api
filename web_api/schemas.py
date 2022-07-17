@@ -6,13 +6,9 @@ class RecordBase(BaseModel):
     rate: str
 
 
-class RecordCreate(RecordBase):
-    datetime: str
-
-
 class Record(RecordBase):
-    datetime: str
     id: int
+    datetime: str
 
     class Config:
         orm_mode = True
